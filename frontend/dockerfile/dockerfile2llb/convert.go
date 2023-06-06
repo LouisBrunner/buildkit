@@ -693,17 +693,18 @@ func dispatch(d *dispatchState, cmd command, opt dispatchOpt) error {
 		}
 		if err == nil {
 			err = dispatchCopy(d, copyConfig{
-				params:       c.SourcesAndDest,
-				source:       opt.buildContext,
-				isAddCommand: true,
-				cmdToPrint:   c,
-				chown:        c.Chown,
-				chmod:        c.Chmod,
-				link:         c.Link,
-				keepGitDir:   c.KeepGitDir,
-				checksum:     checksum,
-				location:     c.Location(),
-				opt:          opt,
+				params:             c.SourcesAndDest,
+				source:             opt.buildContext,
+				isAddCommand:       true,
+				cmdToPrint:         c,
+				chown:              c.Chown,
+				chmod:              c.Chmod,
+				dontFollowSymlinks: c.DontFollowSymlinks,
+				link:               c.Link,
+				keepGitDir:         c.KeepGitDir,
+				checksum:           checksum,
+				location:           c.Location(),
+				opt:                opt,
 			})
 		}
 		if err == nil {
@@ -741,15 +742,16 @@ func dispatch(d *dispatchState, cmd command, opt dispatchOpt) error {
 			l = cmd.sources[0].state
 		}
 		err = dispatchCopy(d, copyConfig{
-			params:       c.SourcesAndDest,
-			source:       l,
-			isAddCommand: false,
-			cmdToPrint:   c,
-			chown:        c.Chown,
-			chmod:        c.Chmod,
-			link:         c.Link,
-			location:     c.Location(),
-			opt:          opt,
+			params:             c.SourcesAndDest,
+			source:             l,
+			isAddCommand:       false,
+			cmdToPrint:         c,
+			chown:              c.Chown,
+			chmod:              c.Chmod,
+			dontFollowSymlinks: c.DontFollowSymlinks,
+			link:               c.Link,
+			location:           c.Location(),
+			opt:                opt,
 		})
 		if err == nil && len(cmd.sources) == 0 {
 			for _, src := range c.SourcePaths {
@@ -1137,7 +1139,7 @@ func dispatchCopy(d *dispatchState, cfg copyConfig) error {
 		} else {
 			opts := append([]llb.CopyOption{&llb.CopyInfo{
 				Mode:                mode,
-				FollowSymlinks:      true,
+				FollowSymlinks:      !cfg.dontFollowSymlinks,
 				CopyDirContentsOnly: true,
 				AttemptUnpack:       cfg.isAddCommand,
 				CreateDestPath:      true,
@@ -1220,17 +1222,18 @@ func dispatchCopy(d *dispatchState, cfg copyConfig) error {
 }
 
 type copyConfig struct {
-	params       instructions.SourcesAndDest
-	source       llb.State
-	isAddCommand bool
-	cmdToPrint   fmt.Stringer
-	chown        string
-	chmod        string
-	link         bool
-	keepGitDir   bool
-	checksum     digest.Digest
-	location     []parser.Range
-	opt          dispatchOpt
+	params             instructions.SourcesAndDest
+	source             llb.State
+	isAddCommand       bool
+	cmdToPrint         fmt.Stringer
+	chown              string
+	chmod              string
+	link               bool
+	keepGitDir         bool
+	dontFollowSymlinks bool
+	checksum           digest.Digest
+	location           []parser.Range
+	opt                dispatchOpt
 }
 
 func dispatchMaintainer(d *dispatchState, c *instructions.MaintainerCommand) error {

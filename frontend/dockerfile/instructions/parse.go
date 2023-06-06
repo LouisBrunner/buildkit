@@ -284,6 +284,7 @@ func parseAdd(req parseRequest) (*AddCommand, error) {
 	}
 	flChown := req.flags.AddString("chown", "")
 	flChmod := req.flags.AddString("chmod", "")
+	flDontFollowSymlinks := req.flags.AddBool("dont-follow-symlinks", false)
 	flLink := req.flags.AddBool("link", false)
 	flKeepGitDir := req.flags.AddBool("keep-git-dir", false)
 	flChecksum := req.flags.AddString("checksum", "")
@@ -297,13 +298,14 @@ func parseAdd(req parseRequest) (*AddCommand, error) {
 	}
 
 	return &AddCommand{
-		withNameAndCode: newWithNameAndCode(req),
-		SourcesAndDest:  *sourcesAndDest,
-		Chown:           flChown.Value,
-		Chmod:           flChmod.Value,
-		Link:            flLink.Value == "true",
-		KeepGitDir:      flKeepGitDir.Value == "true",
-		Checksum:        flChecksum.Value,
+		withNameAndCode:    newWithNameAndCode(req),
+		SourcesAndDest:     *sourcesAndDest,
+		Chown:              flChown.Value,
+		Chmod:              flChmod.Value,
+		DontFollowSymlinks: flDontFollowSymlinks.Value == "true",
+		Link:               flLink.Value == "true",
+		KeepGitDir:         flKeepGitDir.Value == "true",
+		Checksum:           flChecksum.Value,
 	}, nil
 }
 
@@ -314,6 +316,7 @@ func parseCopy(req parseRequest) (*CopyCommand, error) {
 	flChown := req.flags.AddString("chown", "")
 	flFrom := req.flags.AddString("from", "")
 	flChmod := req.flags.AddString("chmod", "")
+	flDontFollowSymlinks := req.flags.AddBool("dont-follow-symlinks", false)
 	flLink := req.flags.AddBool("link", false)
 	if err := req.flags.Parse(); err != nil {
 		return nil, err
@@ -325,12 +328,13 @@ func parseCopy(req parseRequest) (*CopyCommand, error) {
 	}
 
 	return &CopyCommand{
-		withNameAndCode: newWithNameAndCode(req),
-		SourcesAndDest:  *sourcesAndDest,
-		From:            flFrom.Value,
-		Chown:           flChown.Value,
-		Chmod:           flChmod.Value,
-		Link:            flLink.Value == "true",
+		withNameAndCode:    newWithNameAndCode(req),
+		SourcesAndDest:     *sourcesAndDest,
+		From:               flFrom.Value,
+		Chown:              flChown.Value,
+		Chmod:              flChmod.Value,
+		DontFollowSymlinks: flDontFollowSymlinks.Value == "true",
+		Link:               flLink.Value == "true",
 	}, nil
 }
 
