@@ -284,7 +284,7 @@ func parseAdd(req parseRequest) (*AddCommand, error) {
 	}
 	flChown := req.flags.AddString("chown", "")
 	flChmod := req.flags.AddString("chmod", "")
-	flDontFollowSymlinks := req.flags.AddBool("dont-follow-symlinks", false)
+	flDontFollowSymlinks := req.flags.AddBool("no-follow-symlinks", false)
 	flLink := req.flags.AddBool("link", false)
 	flKeepGitDir := req.flags.AddBool("keep-git-dir", false)
 	flChecksum := req.flags.AddString("checksum", "")
@@ -316,7 +316,7 @@ func parseCopy(req parseRequest) (*CopyCommand, error) {
 	flChown := req.flags.AddString("chown", "")
 	flFrom := req.flags.AddString("from", "")
 	flChmod := req.flags.AddString("chmod", "")
-	flDontFollowSymlinks := req.flags.AddBool("dont-follow-symlinks", false)
+	flDontFollowSymlinks := req.flags.AddBool("no-follow-symlinks", false)
 	flLink := req.flags.AddBool("link", false)
 	if err := req.flags.Parse(); err != nil {
 		return nil, err
